@@ -1,30 +1,42 @@
-import { Link } from 'expo-router';
-import { StyleSheet, Text, View } from 'react-native';
-
+import { PageItem, pages } from '@/constants/Pages';
+import { commonStyles } from '@/styles';
+import { useNavigation } from 'expo-router';
+import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 export default function Index() {
+  const navigation = useNavigation()
+  const onPressLearnMore = (item: PageItem) => {
+    navigation.navigate({
+      name: item.path,
+      params: {
+        key: item.key
+      }
+    } as never);
+  }
+
+  const renderItem = ({ item }: { item: PageItem }) => (
+    <TouchableOpacity
+      style={commonStyles.button}
+      onPress={() => onPressLearnMore(item)}
+    >
+      <Text>{item.label}</Text>
+    </TouchableOpacity>
+  )
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Home screen</Text>
-      <Link href="/about" style={styles.button}>
-        Go to About screen
-      </Link>
+      <FlatList
+        data={pages}
+        keyExtractor={item => item.key}
+        ItemSeparatorComponent={() => <View style={styles.separator} />}
+        renderItem={renderItem} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#25292e',
-    alignItems: 'center',
-    justifyContent: 'center',
+    padding: 10
   },
-  text: {
-    color: '#fff',
-  },
-  button: {
-    fontSize: 20,
-    textDecorationLine: 'underline',
-    color: '#fff',
-  },
+  separator: {
+    height: 10
+  }
 });
