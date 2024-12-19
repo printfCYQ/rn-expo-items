@@ -15,6 +15,17 @@ export const pages: PageItem[] = [
         key: 'demo',
     },
     {
+        label: 'Reac tNative Component',
+        path: 'second',
+        key: 'reactNativeComponent', 
+        children: [
+            {
+                label: 'FlatList Paging',
+                path: 'reactNativeComponent/flatListPaging',
+            },
+        ]
+    },
+    {
         label: 'Bottom Sheet',
         path: 'second',
         key: 'bottomSheet',
