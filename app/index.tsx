@@ -4,7 +4,7 @@ import { useNavigation } from 'expo-router';
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 export default function Index() {
   const navigation = useNavigation()
-  const onPressLearnMore = (item: PageItem) => {
+  const onPress = (item: PageItem) => {
     navigation.navigate({
       name: item.path,
       params: {
@@ -16,7 +16,7 @@ export default function Index() {
   const renderItem = ({ item }: { item: PageItem }) => (
     <TouchableOpacity
       style={commonStyles.button}
-      onPress={() => onPressLearnMore(item)}
+      onPress={() => onPress(item)}
     >
       <Text>{item.label}</Text>
     </TouchableOpacity>

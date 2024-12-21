@@ -15,6 +15,17 @@ export const pages: PageItem[] = [
         key: 'demo',
     },
     {
+        label: 'Items',
+        path: 'second',
+        key: 'items',
+        children: [
+            {
+                label: 'Tabbar',
+                path: 'items/tabbar',
+            },
+        ]
+    },
+    {
         label: 'Reac tNative Component',
         path: 'second',
         key: 'reactNativeComponent', 
