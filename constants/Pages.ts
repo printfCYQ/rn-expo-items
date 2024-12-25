@@ -23,6 +23,10 @@ export const pages: PageItem[] = [
                 label: 'Tabbar',
                 path: 'items/tabbar',
             },
+            {
+                label: 'Sidebar',
+                path: 'items/sidebar',
+            },
         ]
     },
     {
