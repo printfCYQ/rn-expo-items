@@ -27,6 +27,10 @@ export const pages: PageItem[] = [
                 label: 'Sidebar',
                 path: 'items/sidebar',
             },
+            {
+                label: 'DragButton',
+                path: 'items/dragButton',
+            },
         ]
     },
     {
