@@ -1,16 +1,18 @@
 import { PageItem, pages } from '@/constants/Pages';
 import { commonStyles } from '@/styles';
-import { useNavigation } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 export default function Index() {
-  const navigation = useNavigation()
+  const router = useRouter();
+
   const onPress = (item: PageItem) => {
-    navigation.navigate({
-      name: item.path,
+    router.push({
+      // @ts-ignore
+      pathname: item.path,
       params: {
-        key: item.key
-      }
-    } as never);
+        key: item.key,
+      },
+    })
   }
 
   const renderItem = ({ item }: { item: PageItem }) => (

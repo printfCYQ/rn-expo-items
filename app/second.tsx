@@ -1,10 +1,12 @@
 import { PageChildrenItem, pages } from '@/constants/Pages';
 import { commonStyles } from '@/styles';
-import { useLocalSearchParams, useNavigation } from 'expo-router';
+import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
 import { useLayoutEffect } from 'react';
+
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 export default function Index() {
     const navigation = useNavigation();
+    const router = useRouter()
     const { key } = useLocalSearchParams();
 
     useLayoutEffect(() => {
@@ -16,7 +18,8 @@ export default function Index() {
     const getPages: PageChildrenItem[] = pages.find(item => item.key === key)?.children as PageChildrenItem[]
 
     const onPressLearnMore = (path: string) => {
-        navigation.navigate(path as never);
+        // @ts-ignore
+        router.push(path)
     }
 
     const renderItem = ({ item }: { item: PageChildrenItem }) => (

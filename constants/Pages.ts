@@ -21,15 +21,19 @@ export const pages: PageItem[] = [
         children: [
             {
                 label: 'Tabbar',
-                path: 'items/tabbar',
+                path: '/items/tabbar',
             },
             {
                 label: 'Sidebar',
-                path: 'items/sidebar',
+                path: '/items/sidebar',
             },
             {
                 label: 'DragButton',
-                path: 'items/dragButton',
+                path: '/items/dragButton',
+            },
+            {
+                label: 'Scanner',
+                path: '/items/scanner',
             },
         ]
     },
@@ -40,7 +44,7 @@ export const pages: PageItem[] = [
         children: [
             {
                 label: 'FlatList Paging',
-                path: 'reactNativeComponent/flatListPaging',
+                path: '/reactNativeComponent/flatListPaging',
             },
         ]
     },
@@ -51,15 +55,15 @@ export const pages: PageItem[] = [
         children: [
             {
                 label: 'Simple Usage',
-                path: 'bottomSheet/simpleUsage',
+                path: '/bottomSheet/simpleUsage',
             },
             {
                 label: 'BottomSheetView',
-                path: 'bottomSheet/bottomSheetView', 
+                path: '/bottomSheet/bottomSheetView', 
             },
             {
                 label:'BottomSheetScrollView',
-                path: 'bottomSheet/bottomSheetScrollView', 
+                path: '/bottomSheet/bottomSheetScrollView', 
             }
         ]
     }
