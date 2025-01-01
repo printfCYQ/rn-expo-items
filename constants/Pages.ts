@@ -35,6 +35,10 @@ export const pages: PageItem[] = [
                 label: 'Scanner',
                 path: '/items/scanner',
             },
+            {
+                label: 'FlipClock',
+                path: '/items/flipClock',
+            },
         ]
     },
     {

@@ -3456,6 +3456,11 @@
     "semver" "~7.6.3"
     "server-only" "^0.0.1"
 
+"expo-screen-orientation@~8.0.2":
+  "integrity" "sha512-YsY7Oumlv1WsHLQVgl1f+vAiMZfzUPGyVF2xc7jxmHKtM+jMzIflDl2qKLGfoB0S9Pgg6Z8V4+c+A8wlCURw4A=="
+  "resolved" "https://registry.npmjs.org/expo-screen-orientation/-/expo-screen-orientation-8.0.2.tgz"
+  "version" "8.0.2"
+
 "expo-splash-screen@~0.29.18":
   "integrity" "sha512-bTBY+LF6YtYen2j60yGNh2SX/tG4UXZAyBCMMriOSiZZ7LSCs3ARyEufaSiWk+ckWShTeMqItOnaAN/CAF8MJA=="
   "resolved" "https://registry.npmjs.org/expo-splash-screen/-/expo-splash-screen-0.29.18.tgz"
