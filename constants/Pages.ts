@@ -39,10 +39,14 @@ export const pages: PageItem[] = [
                 label: 'FlipClock',
                 path: '/items/flipClock',
             },
+            {
+                label: 'Preview Image',
+                path: '/items/previewImage',
+            },
         ]
     },
     {
-        label: 'Reac tNative Component',
+        label: 'ReactNative Component',
         path: 'second',
         key: 'reactNativeComponent', 
         children: [
