@@ -23,7 +23,7 @@ const App = () => {
             'Select Modal',
             [
                 {
-                    text: 'ModalA 原生',
+                    text: 'ModalA 原生FlatList 左右切换',
                     onPress: () => {
                         modalARef.current?.show({
                             index,
