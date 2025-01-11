@@ -33,6 +33,9 @@ const ModalA = forwardRef((_, ref) => {
                 scrollToActiveIndex(activeIndex, !initial);
             }, 0);
         }
+        return () => {
+            setInitial(true);
+        }
     }, [visible, activeIndex]);
 
     // 滚动到指定索引

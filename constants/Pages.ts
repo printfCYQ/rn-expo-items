@@ -43,12 +43,16 @@ export const pages: PageItem[] = [
                 label: 'Preview Image',
                 path: '/items/previewImage',
             },
+            {
+                label: 'Gallery View',
+                path: '/items/galleryView',
+            }
         ]
     },
     {
         label: 'ReactNative Component',
         path: 'second',
-        key: 'reactNativeComponent', 
+        key: 'reactNativeComponent',
         children: [
             {
                 label: 'FlatList Paging',
@@ -67,11 +71,11 @@ export const pages: PageItem[] = [
             },
             {
                 label: 'BottomSheetView',
-                path: '/bottomSheet/bottomSheetView', 
+                path: '/bottomSheet/bottomSheetView',
             },
             {
-                label:'BottomSheetScrollView',
-                path: '/bottomSheet/bottomSheetScrollView', 
+                label: 'BottomSheetScrollView',
+                path: '/bottomSheet/bottomSheetScrollView',
             }
         ]
     }
