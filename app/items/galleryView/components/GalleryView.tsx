@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, Animated, Dimensions, FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Animated, Dimensions, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 const { width, height } = Dimensions.get('window');
 const API_URL = "https://picsum.photos/v2/list";
@@ -24,8 +24,9 @@ const GalleryView = () => {
     const [images, setImages] = useState<ImageItem[]>([]);
     const [loading, setLoading] = useState(true);
     const [activeIndex, setActiveIndex] = useState(0);
-    const topRef = useRef<FlatList>(null)
+    const topRef = useRef<Animated.FlatList>(null)
     const thumbRef = useRef<FlatList>(null)
+    const scrollX = useRef(new Animated.Value(0)).current;
     useEffect(() => {
         const fetchImages = async () => {
             try {
@@ -78,13 +79,18 @@ const GalleryView = () => {
 
     return (
         <View>
-            <FlatList
+            <Animated.FlatList
                 ref={topRef}
                 data={images}
                 keyExtractor={(item) => item.id}
                 horizontal
                 pagingEnabled
                 showsHorizontalScrollIndicator={false}
+                scrollEventThrottle={16}
+                onScroll={Animated.event(
+                    [{ nativeEvent: { contentOffset: { x: scrollX } } }],
+                    { useNativeDriver: true }
+                )}
                 onMomentumScrollEnd={onMomentumScrollEnd}
                 renderItem={({ item }) => {
                     console.log(item.author)
@@ -92,7 +98,8 @@ const GalleryView = () => {
                         <ImageWithAnimation
                             uri={item.download_url}
                             author={item.author}
-                            activeIndex={activeIndex}
+                            index={activeIndex}
+                            scrollX={scrollX}
                         />
                     )
                 }}
@@ -113,6 +120,7 @@ const GalleryView = () => {
                         uri={item.download_url}
                         isActive={activeIndex === index}
                         onPress={() => scorllToActiveIndex(index)}
+                        index={index}
                     />
                 )}
             />
@@ -123,55 +131,68 @@ const GalleryView = () => {
 const ImageWithAnimation: FC<({
     uri: string;
     author: string;
-    activeIndex: number;
-})> = ({ activeIndex, author, uri }) => {
-    const opacity = useRef(new Animated.Value(0)).current;
-    const translateY = useRef(new Animated.Value(0)).current;
-    const [prevIndex] = useState(activeIndex);
+    index: number;
+    scrollX: Animated.Value;
+})> = ({ uri, author, index, scrollX }) => {
 
-    useEffect(() => {
-        if (prevIndex !== activeIndex) {
-            Animated.sequence([
-                Animated.parallel([
-                    Animated.timing(opacity, {
-                        toValue: 0,
-                        duration: 200,
-                        useNativeDriver: true,
-                    }),
-                    Animated.timing(translateY, {
-                        toValue: 30,
-                        duration: 200,
-                        useNativeDriver: true,
-                    }),
-                ]),
-                Animated.parallel([
-                    Animated.timing(opacity, {
-                        toValue: 1,
-                        duration: 500,
-                        useNativeDriver: true,
-                    }),
-                    Animated.timing(translateY, {
-                        toValue: 0,
-                        duration: 500,
-                        useNativeDriver: true,
-                    }),
-                ]),
-            ]).start();
+    const [isLoading, setIsLoading] = useState(true);
+    const fadeAnim = useRef(new Animated.Value(0)).current;
 
-        }
+    const scale = scrollX.interpolate({
+        inputRange: [(index - 1) * width, index * width, (index + 1) * width],
+        outputRange: [0.8, 1, 0.8],
+        extrapolate: 'clamp',
     });
+
+    const opacity = scrollX.interpolate({
+        inputRange: [(index - 1) * width, index * width, (index + 1) * width],
+        outputRange: [0.5, 1, 0.5],
+        extrapolate: 'clamp',
+    });
+
+    const scaleX = scrollX.interpolate({
+        inputRange: [(index - 1) * width, index * width, (index + 1) * width],
+        outputRange: [0, 1, 0],
+        extrapolate: 'clamp',
+    });
+
+    const translateY = scrollX.interpolate({
+        inputRange: [(index - 1) * width, index * width, (index + 1) * width],
+        outputRange: [50, 0, 50],
+        extrapolate: 'clamp',
+    });
+
+    const handleImageLoad = () => {
+        setIsLoading(false);
+        Animated.timing(fadeAnim, {
+            toValue: 1,
+            duration: 300,
+            useNativeDriver: true,
+        }).start();
+    }
+
     return (
-        <View className='h-full' style={{ width }}>
-            <Image
+        <Animated.View className='h-full' style={{ width, transform: [{ scale }], opacity }}>
+            {
+                isLoading && (
+                    <ActivityIndicator
+                        size={'large'}
+                        color={'white'}
+                        style={StyleSheet.absoluteFillObject}
+                    />
+                )
+            }
+            <Animated.Image
                 source={{ uri }}
-                style={StyleSheet.absoluteFillObject}
+                onLoad={handleImageLoad}
+                style={[StyleSheet.absoluteFillObject, { opacity: fadeAnim }]}
             />
             <Animated.View
-                className={`absolute w-full aligh-center`}
+                className='absolute w-full aligh-center'
                 style={{
                     bottom: IMAGE_SIZE / 2,
                     opacity,
-                    transform: [{ translateY }],
+                    transform: [{ translateY }, { scaleX }],
                 }}
             >
                 <Text className='text-white text-center text-lg font-bold'>
@@ -179,7 +200,7 @@ const ImageWithAnimation: FC<({
                 </Text>
             </Animated.View>
 
-        </View>
+        </Animated.View>
     )
 }
 
@@ -187,31 +208,87 @@ const ThumbnailWithAnimation: FC<{
     uri: string,
     isActive: boolean,
     onPress: () => void;
-}> = ({ isActive, onPress, uri }) => {
+    index: number;
+}> = ({ isActive, onPress, uri, index }) => {
+    const [isLoading, setIsLoading] = useState(true);
 
-    const opacity = useRef(new Animated.Value(0)).current;
+    const borderColor = useRef(new Animated.Value(0)).current;
+    const fadeAnim = useRef(new Animated.Value(0)).current;
+    const translateX = useRef(new Animated.Value(0)).current;
+    const delay = index * 100;
+
     useEffect(() => {
-        Animated.timing(opacity, {
+        Animated.sequence([
+            Animated.delay(delay),
+            Animated.timing(translateX, {
+                toValue: 1,
+                duration: 300,
+                useNativeDriver: true,
+            }),
+        ]).start();
+
+        Animated.timing(fadeAnim, {
             toValue: 1,
             duration: 300,
             useNativeDriver: true,
         }).start();
-    })
+
+        Animated.timing(borderColor, {
+            toValue: isActive ? 1 : 0,
+            duration: 100,
+            useNativeDriver: true,
+        }).start();
+
+    }, [index, isActive])
+
+    const animatedBorderColor = borderColor.interpolate({
+        inputRange: [0, 1],
+        outputRange: ['transparent', 'white'],
+    });
+
+    const handleImageLoad = () => {
+        setIsLoading(false);
+        Animated.timing(fadeAnim, {
+            toValue: 1,
+            duration: 300,
+            useNativeDriver: true,
+        }).start();
+    }
+
     return (
         <TouchableOpacity
             onPress={onPress}
         >
-            <Animated.Image
-                source={{ uri }}
-                className='rounded-[12] border-2'
-                style={{
-                    width: IMAGE_SIZE,
-                    height: IMAGE_SIZE,
-                    marginRight: SPACING,
-                    borderColor: isActive ? 'white' : 'transparent',
-                }}
-            />
-        </TouchableOpacity>
+            <Animated.View className='rounded-[12] border-2 overflow-hidden' style={{
+                width: IMAGE_SIZE,
+                height: IMAGE_SIZE,
+                marginRight: SPACING,
+                transform: [{ scale: translateX }],
+                borderColor: animatedBorderColor,
+            }}>
+                {
+                    isLoading && (
+                        <View className='absolute w-full h-full align-center justify-center bg-black'>
+                            <ActivityIndicator
+                                size={'small'}
+                                color={'white'}
+                                style={StyleSheet.absoluteFillObject}
+                            />
+                        </View>
+                    )
+                }
+                <Animated.Image
+                    source={{ uri }}
+                    className='flex-1 rounded-[12]'
+                    style={{
+                        marginRight: 0,
+                        opacity: fadeAnim,
+                    }}
+                    onLoad={handleImageLoad}
+                />
+            </Animated.View>
+
+        </TouchableOpacity >
     )
 }
 export default GalleryView;
