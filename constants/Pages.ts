@@ -78,5 +78,16 @@ export const pages: PageItem[] = [
                 path: '/bottomSheet/bottomSheetScrollView',
             }
         ]
+    },
+    {
+        label: 'Gesture Handler',
+        path: 'second',
+        key: 'gestureHandler',
+        children: [
+            {
+                label: 'Scale Image',
+                path: '/gestureHandler/scaleImage',
+            }
+        ]
     }
 ]
