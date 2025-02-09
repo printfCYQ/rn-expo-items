@@ -4,6 +4,8 @@ import Svg, { Path } from 'react-native-svg';
 
 export interface SignaturePadRef {
     clearSignature: () => void;
+    stopDraw: () => void;
+    startDraw: () => void;
 }
 
 const SignaturePad = forwardRef<SignaturePadRef, {}>((props, ref) => {
@@ -12,13 +14,19 @@ const SignaturePad = forwardRef<SignaturePadRef, {}>((props, ref) => {
     // 存储当前正在绘制的路径
     const currentPath = useRef('');
 
+    const canDraw = useRef(false);
+
     const handleTouchStart = (event: GestureResponderEvent) => {
+        // canDraw.current = true;
         const { locationX, locationY } = event.nativeEvent;
         currentPath.current = `M${locationX},${locationY}`;
     };
 
     const handleTouchMove = (event: GestureResponderEvent) => {
-        const { locationX, locationY } = event.nativeEvent;
+        if (!canDraw.current) return;
+        const { locationX, locationY, pageX, pageY } = event.nativeEvent;
+
+        console.log('handleTouchMove', pageX, pageY);
 
         // 更新当前路径
         currentPath.current += ` L${locationX},${locationY}`;
@@ -26,10 +34,9 @@ const SignaturePad = forwardRef<SignaturePadRef, {}>((props, ref) => {
     };
 
     const handleTouchEnd = () => {
-        if (currentPath.current) {
-            setPaths((prevPaths) => [...prevPaths, currentPath.current]);
-            currentPath.current = '';
-        }
+        if (!canDraw.current || !currentPath.current) return;
+        setPaths((prevPaths) => [...prevPaths, currentPath.current]);
+        currentPath.current = '';
     };
 
     // 清空签字板的函数
@@ -38,8 +45,18 @@ const SignaturePad = forwardRef<SignaturePadRef, {}>((props, ref) => {
         currentPath.current = '';
     };
 
+    const stopDraw = () => {
+        canDraw.current = false;
+    }
+
+    const startDraw = () => {
+        canDraw.current = true;
+    }
+
     useImperativeHandle(ref, () => ({
-        clearSignature
+        clearSignature,
+        stopDraw,
+        startDraw
     }));
 
     return (
