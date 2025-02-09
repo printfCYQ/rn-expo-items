@@ -89,5 +89,20 @@ export const pages: PageItem[] = [
                 path: '/gestureHandler/scaleImage',
             }
         ]
+    },
+    {
+        label: 'SignaturePad',
+        path: 'second',
+        key: 'signaturePad',
+        children: [
+            {
+                label: 'reactNativeSvg',
+                path: '/signaturePad/reactNativeSvg',
+            },
+            {
+                label: 'reactNativeSkia',
+                path: '/signaturePad/reactNativeSkia',
+            }
+        ]
     }
 ]
